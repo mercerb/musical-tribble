@@ -1,24 +1,27 @@
-import React from "react";
-import { getMessages, slackMessage } from "./parseSlackMessages";
+import React, { useState, useEffect } from "react";
 
-export function ReposGrid(id: any) {
-    const [messages, setMessages] = React.useState<slackMessage[] | undefined>(undefined);
+import { getMessages, SlackMessage } from "./parseSlackMessages";
 
-    React.useEffect(() => {
+export function ListSlackMessages() {
+    const [messages, setMessages] = useState<SlackMessage[] | undefined>(undefined);
+
+    useEffect(() => {
         let messages = [];
         messages = getMessages();
         setMessages(messages);
-    });
+    }, [messages]);
 
-    return (
+    return !messages ? (
+        <div>No messages</div>
+    ) : (
         <ul>
-            {messages: messages.map(({ user, text, ts }) => (
-                <li key={user}>
+            {messages.map(({ user, text, ts }) => (
+                <li key={ts}>
                     <ul>
                         <li>
                             <a>{user}</a>
                         </li>
-                        <li>text</li>
+                        <li>{text}</li>
                     </ul>
                 </li>
             ))}
