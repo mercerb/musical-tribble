@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 
-import { getMessages, SlackMessage } from "./parseSlackMessages";
+import SlackMessages, { SlackMessage } from "./parseSlackMessages";
 import useInfiniteScroll from "./useInfiniteScroll";
+import MessageCard from "./Message";
+const data = require("./data/mercer.json");
+
 export function ListSlackMessages() {
-    const allMessages = getMessages();
+    const slackMessages = SlackMessages.fromConfig(data);
+    const allMessages = slackMessages.getMessages();
     const [messages, setMessages] = useState<SlackMessage[] | undefined>(undefined);
     const [offset, setOffset] = useState<number>(0);
     const [isFetching, setIsFetching] = useInfiniteScroll(fetchMoreListItems);
@@ -26,14 +30,12 @@ export function ListSlackMessages() {
         <div>No messages</div>
     ) : (
         <ul>
-            {messages.map(({ user, text, ts }) => (
-                <li key={ts}>
-                    <li>
-                        <a>{user === "U7P8Y9QQN" ? "Mercer" : "Luke"}</a>
-                    </li>
-                    <li>{text}</li>
-                </li>
-            ))}
+            { messages.map(message => (
+                <MessageCard 
+                    data={message} 
+                    color={slackMessages.getColorFromUser(message.user)}
+                    name={slackMessages.getNameFromUserId(message.user)} />
+            )) }
         </ul>
     );
 }

@@ -10,7 +10,6 @@ const App: React.FC = () => {
             </header>
         </div>
     );
-    // return ListSlackMessages();
 };
 
 export default App;
